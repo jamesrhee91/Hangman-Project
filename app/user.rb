@@ -1,11 +1,13 @@
 class User
-  attr_accessor :name, :wins, :loses
+  attr_accessor :name, :wins, :losses
 
   @@all = []
 
   def initialize(name)
     @name = name
     @@all << self
+    @wins = 0
+    @losses = 0
   end
 
   def self.all

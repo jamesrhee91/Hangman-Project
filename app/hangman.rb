@@ -1,12 +1,15 @@
 class Hangman
 
-  def initialize
+  attr_accessor :user
+
+  def initialize(user)
     @board = []# ['O', '|', '/', '\\', '|', '/', '\\']
     @errors = ['O', '|', '/', '\\', '|', '/', '\\']
     @word_to_guess = Dictionary.all.sample
     @display_word = @word_to_guess.name.chars.map {|e| "_"}.join # ["a", "p", "p", "l", "e"]
     @clue = @word_to_guess.clue
     @answer = @word_to_guess.name
+    @user = user
   end
 
   def display_board
@@ -53,19 +56,36 @@ class Hangman
     end
   end
 
-  def over?
-    if @errors.empty? || @display_word == @answer
-      return true
-    end
-    false
+#  def over?
+#    if @errors.empty? || @display_word == @answer
+#      return true
+#    end
+#    false
+#  end
+
+def over?
+  if @errors.empty?
+    @user.losses += 1
+    puts "YOU LOST"
+    return true
+  elsif @display_word == @answer
+    @user.wins += 1
+    puts "YOU WON"
+    return true
   end
+  false
+end
 
   def play
     until over?
       turn
     end
     display_board
-    puts "Let's play again!"
+    display_stats
+  end
+
+  def display_stats
+    puts "#{user.name} : #{user.wins} win(s) - #{user.losses} loss(es)"
   end
 
 end
