@@ -1,50 +1,71 @@
 class Hangman
 
   def initialize
-    @board = [" ", " ", " ", " ", " ", " "]
-    @word_to_guess = Dictionary.all.sample#.name.chars # and the answer ["a", "p", "p", "l", "e"]
-    @hidden_letters = @word_to_guess.name.chars.map {|e| "_"} # ["a", "p", "p", "l", "e"]
+    @board = []# ['O', '|', '/', '\\', '|', '/', '\\']
+    @errors = ['O', '|', '/', '\\', '|', '/', '\\']
+    @word_to_guess = Dictionary.all.sample
+    @display_word = @word_to_guess.name.chars.map {|e| "_"}.join # ["a", "p", "p", "l", "e"]
     @clue = @word_to_guess.clue
-    binding.pry
+    @answer = @word_to_guess.name
   end
 
   def display_board
     puts "_____"
     puts "|   |"
     puts "|   #{@board[0]}"
-    puts "| #{@board[2]}#{@board[1]}#{@board[3]}"
-    puts "|   #{@board[4]}#{@board[5]}"
+    puts "|  #{@board[2]}#{@board[1]}#{@board[3]}"
+    puts "|   #{@board[4]}"
+    puts "|  #{@board[5]} #{@board[6]}"
+    puts "====="
+    puts ""
+    puts "Clue: #{@clue}"
+    puts "Answer: #{@display_word}"
   end
 
-  def display_word
-    puts @hidden_letters.join
-    puts @clue
+  def valid_guess?(input)
+    ("a".."z").include?(input)
   end
 
-  def player_guess(guessed_letter)
-    if @word_to_guess.name.chars.index(guessed_letter)
-      idx = @word_to_guess.name.chars.index(guessed_letter)
-      @hidden_letters[idx] = guessed_letter
-      puts "You guess correct!"
+  def player_guess(input)
+
+    if @answer.include?(input)
+      idx = []
+      @answer.chars.each_with_index {|ch, i| idx << i if ch == input}
+      until idx.length == 0
+        @display_word[idx.shift] = input
+      end
+      puts "You guessed correct!"
     else
-      # add incorrect guess to hangman board
+      error = @errors.shift
+      @board << error
       puts "You guessed wrong!"
     end
   end
 
   def turn
     display_board
-    display_word
-    puts "Please enter a letter between A-Z"
+    puts "Please enter a letter between a-z"
     input = gets.strip.downcase
-    player_guess(input)
+    if valid_guess?(input)
+      player_guess(input)
+    else
+      turn
+    end
+  end
+
+  def over?
+    if @errors.empty? || @display_word == @answer
+      return true
+    end
+    false
   end
 
   def play
-    @word_to_guess.name.length.times do |e|
+    until over?
       turn
     end
-
+    display_board
+    puts "Let's play again!"
   end
 
 end
