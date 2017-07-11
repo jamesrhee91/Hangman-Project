@@ -15,9 +15,28 @@ class User
   end
 
   def self.find_or_create_by_name(name)
-    # binding.pry
     check = self.all.find {|user| user.name == name}
     check ? check : check = self.new(name)
     check
   end
+
+  def greeting(name)
+    puts "WELCOME TO HANGMAN #{name.upcase}!".cyan
+  end
+
+  def play_again?
+    puts "DO YOU WANT TO PLAY AGAIN? (Y/N)".cyan
+    input = gets.chomp.downcase
+
+    case input
+    when "no", "n"
+      return false
+    when "yes", "y"
+      return true
+    else
+      puts "PLEASE ENTER 'Y' OR 'N'".cyan
+      play_again?
+    end
+  end
+
 end

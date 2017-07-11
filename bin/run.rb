@@ -6,16 +6,24 @@ require 'pry'
 
 
 loop do
+  menu
 
-  puts "Enter your name:"
-  user_name = gets.chomp
-  user = User.find_or_create_by_name(user_name)
-  greeting(user.name)
+    puts "PLEASE ENTER YOU NAME:".cyan
+    user_name = gets.chomp.upcase
+    abort("THANKS FOR NOTHING!") if user_name == "EXIT"
+    user = User.find_or_create_by_name(user_name)
+    greeting(user.name)
 
 
-  hangman = Hangman.new(user)
-  hangman.play
+    # game = Hangman.new(user)
+  #
+  loop do
+    game = Hangman.new(user)
+    # game.display_menu
+    game.play
 
-  break if !play_again?
+    break if !play_again?
+  end
 
+  # game.menu
 end
